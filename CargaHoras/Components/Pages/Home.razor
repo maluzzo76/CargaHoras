@@ -1,0 +1,151 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Registro Horas</PageTitle>
+
+<h1>Registro Horas</h1>
+<i style="font-size:16pt;">Total Horas Registradas   <span class="badge bg-warning text-black">@_TotalHoras</span></i>
+
+<hr />
+<div class="container-fluid bg-fondoForm">
+
+    <div class="row">
+        <h4>Nuevo Registro de Horas</h4>
+    </div>
+
+<br />
+<div class="row">
+    <div class="col input-group mb-3 input-group-sm">
+        <span class="input-group-text">Fecha</span>
+        <input type="date" class="form-control" @bind=_newTarea.fecha />
+    </div>
+    <div class="col input-group mb-3 input-group-sm">
+        <span class="input-group-text">Cliente</span>
+        <select @bind="_newTarea.Cliente" class="form-select">
+            <option value="">Cliente</option>
+            <option value="Cliente 1">Cliente 1</option>
+            <option value="Cliente 2">Cliente 2</option>
+            <option value="Cliente 3">Cliente 3</option>
+        </select>
+    </div>
+    <div class="col input-group mb-3 input-group-sm">
+        <span class="input-group-text">Tarea</span>
+        <select @bind="_newTarea.tarea" class="form-select">
+            <option value="">Tarea</option>
+            <option value="Taras1">tarea 1</option>
+            <option value="Taras2">tarea 2</option>
+            <option value="Taras3">tarea 3</option>
+        </select>
+    </div>
+    <div class="col input-group mb-3 input-group-sm">
+        <span class="input-group-text">Estado</span>
+        <select @bind="_newTarea.Estado" class="form-select">
+            <option value="">Estado</option>
+            <option value="Estado 1">Estado 1</option>
+            <option value="Estado 2">Estado 2</option>
+            <option value="Estado 3">Estado 3</option>
+        </select>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col input-group mb-3 input-group-sm">
+        <span class="input-group-text">Patente</span>
+        <input type="text" class="form-control" @bind=_newTarea.Patente placeholder="ingrese patente" />
+    </div>
+    <div class="col input-group mb-3 input-group-sm">
+        <span class="input-group-text">Producto</span>
+        <select @bind="_newTarea.Producto" class="form-select">
+            <option value="">Producto</option>
+            <option value="Producto 1">Producto 1</option>
+            <option value="Producto 2">Producto 2</option>
+            <option value="Producto 3">Producto 3</option>
+        </select>
+    </div>
+    <div class="col input-group mb-3 input-group-sm">
+        <span class="input-group-text">Horas</span>
+        <input type="number" class="form-control" @bind=_newTarea.Hs placeholder="Hs" />
+    </div>
+    <div class="col input-group mb-3 input-group-sm">
+        <span class="input-group-text">Minutos</span>
+        <input type="number" class="form-control" @bind=_newTarea.Minutos placeholder="Min" />
+    </div>
+</div>
+<button class="btn btn-success" style="padding:5px;" @onclick="() => InsertTareas()">
+    <i class="bi bi-floppy"> Guardar</i>
+</button>
+    <div class="row">
+        <br />
+    </div>
+</div>
+
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>tarea</th>
+            <th>Estado</th>
+            <th>Patente</th>
+            <th>Producto</th>
+            <th>Horas</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="8">
+            </td>
+
+        </tr>
+        @foreach (var _t in ltareas)
+        {
+            <tr>
+                <td>@_t.Usuario</td>
+                <td>@_t.fecha</td>
+                <td>@_t.Cliente</td>
+                <td>@_t.tarea</td>
+                <td>@_t.Estado</td>
+                <td>@_t.Patente</td>
+                <td>@_t.Producto</td>
+                <td>@($"{_t.Hs}:{_t.Minutos}:00")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    private TimeSpan _TotalHoras = TimeSpan.FromMinutes(0);
+    private Tareas _newTarea = new Tareas();
+    private IList<Tareas> ltareas = new List<Tareas>();
+    private string userName = "Usuario desconocido";
+
+    protected override async Task OnInitializedAsync()
+    {      
+        NuevaTareas();
+    }
+
+    private async Task InsertTareas()
+    {
+        ltareas.Add(_newTarea);
+        NuevaTareas();
+
+    }
+
+    private async Task NuevaTareas()
+    {
+        _newTarea = new Tareas();
+        CalcularHoras();
+    }
+
+    private async Task CalcularHoras()
+    {
+        var _MinutosHoras = ltareas.Sum(o => o.Hs) * 60;
+        var _MinutosTotales = ltareas.Sum(o => o.Minutos) + _MinutosHoras;
+        _TotalHoras = TimeSpan.FromMinutes(_MinutosTotales);
+    }
+
+}
