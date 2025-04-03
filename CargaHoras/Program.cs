@@ -4,16 +4,29 @@ using CargaHoras.Components;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using CargaHoras;
+using CargaHoras.Data;
+using Microsoft.EntityFrameworkCore;
+using Blazorise;
+using Blazorise.Bootstrap;
+
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<AppState>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("EntraID"));
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("defaultconection"));
+}
+);
 
 builder.Services.AddAuthorization(options =>
 {
@@ -44,5 +57,7 @@ app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+
 
 app.Run();

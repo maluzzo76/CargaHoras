@@ -14,4 +14,8 @@
 @using Microsoft.Identity.Web;
 @using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 @using Microsoft.AspNetCore.Authorization;
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.EntityFrameworkCore;
+@using Blazorise;
+@inject CargaHoras.Data.ApplicationDbContext _context
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject AppState AppState;

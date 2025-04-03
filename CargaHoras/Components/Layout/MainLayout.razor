@@ -8,7 +8,7 @@
 
     <main>
         <div class="top-row px-2">
-            <h4>Hola! <span> <i>@userName</i></span></h4>
+            <h5> <span> <i>@userName</i></span></h5>
         </div>
 
         <article class="content px-4">
@@ -33,7 +33,16 @@
 
         if (user.Identity is { IsAuthenticated: true })
         {
-            userName = user.Identity.Name ?? "Sin nombre";           
+            if (user.Identity.Name.Contains("@"))
+                userName = user.Identity.Name.Split(char.Parse("@"))[0] ?? "Sin nombre";
+            else
+                userName = user.Identity.Name;
+
+            AppState.UserName = userName;
+            AppState.lClientes =  _context.dimClientes.OrderBy(o => o.nombre).ToList();
+            AppState.lAreaFuncional = _context.dimAreaFuncional.OrderBy(o => o.nombre).ToList();
+            AppState.lPatentes = _context.dimPatentes.OrderBy(o => o.nombre).ToList();
+            AppState.lProductos = _context.dimProductos.OrderBy(o => o.nombre).ToList();
         }
     }
 }

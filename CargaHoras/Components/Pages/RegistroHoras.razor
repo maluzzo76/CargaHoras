@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/Horas"
 @using Blazorise
 @using Blazorise.DataGrid
 @rendermode InteractiveServer
@@ -42,8 +42,8 @@
 	</div>
 	<div class="col-md-3">
 		<div class="input-group mb-3 input-group-sm">
-			<i class="bi bi-search btn" @onclick="()=> cargarTareas()">  </i>
-			<i class="bi bi-x-lg btn" @onclick="()=> CleaFilters()"></i>
+			<i class="bi bi-search" @onclick="()=> cargarTareas()"></i>
+			<i class="bi bi-x-lg" @onclick="()=> CleaFilters()"></i>
 		</div>
 	</div>
 </div>
@@ -200,7 +200,7 @@
 				<td>@_t.Cliente.nombre</td>
 				<td>@_t.AreaFuncional.nombre</td>
 				<td>@_t.estado</td>
-				<td>@(_t?.Patente?.nombre ?? "")</td>
+				<td>@_t.Patente.nombre</td>
 				<td>@_t.Producto.nombre</td>
 				<td>@($"{_t.horas}:{_t.minutos.ToString().PadLeft(2, char.Parse("0"))}:00")</td>
 				<td>
@@ -243,10 +243,10 @@
 		.Include(p => p.Patente)
 		.Include(pr => pr.Producto)
 		.Include(a => a.AreaFuncional).
-		Where(w => w.Usuario.Equals(AppState.UserName)
+		Where(w => w.Usuario.Equals(AppState.UserName) 
 					&& w.Cliente.nombre.Contains(sCliente)
 					&& w.AreaFuncional.nombre.Contains(sTarea)
-					&& w.Producto.nombre.Contains(sProducto)
+					&& w.Producto.nombre.Contains(sProducto)	
 				)
 		.ToList();
 
@@ -272,10 +272,6 @@
 	{
 		try
 		{
-			_newTarea.patenteId = (_newTarea.patenteId.Equals(0)) ? null : _newTarea.patenteId;
-			_newTarea.clienteId = (_newTarea.clienteId.Equals(0)) ? null : _newTarea.clienteId;
-			_newTarea.areaFuncionalId = (_newTarea.areaFuncionalId.Equals(0)) ? null : _newTarea.areaFuncionalId;
-			_newTarea.productoId = (_newTarea.productoId.Equals(0)) ? null : _newTarea.productoId;
 
 			if (_newTarea.id > 0)
 			{

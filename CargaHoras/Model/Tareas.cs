@@ -1,29 +1,35 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Identity;
 
 namespace CargaHoras.Model
 {
     public class Tareas
     {
-        public string Usuario { get; set; }= "Pablo Ons";
-        public string tarea { get; set; } = string.Empty;
-
+        public string Usuario { get; set; }= "";
+        public int id { get; set; }
         public DateTime fecha { get; set; } = DateTime.Now;
-        public int Hs { get; set; } = 0;
-        public int Minutos { get; set; } = 0;
+        public int? clienteId { get; set; }
+        public int? areaFuncionalId { get; set; }
 
-        public string Estado { get; set; } = string.Empty;
-        public string Cliente { get; set; } = string.Empty;
-        public string Producto { get; set; } = string.Empty;
-        public string Patente { get; set; } = string.Empty;
+        public string estado { get; set; } = "Nuevo";
+
+        public int? patenteId { get; set; }
+        public int? productoId { get; set; }
+        public int horas { get; set; }
+        public int minutos { get; set; }
 
         public DateTime horaRegistrada 
         {
             get 
             {
-                return DateTime.Parse($"{Hs}:{Minutos}:00");
+                return DateTime.Parse($"{horas}:{minutos}:00");
             }
         }
-
+        
+        public dimClientes Cliente { get; set; }
+        public dimAreaFuncional AreaFuncional { get; set; }
+        public dimPatentes Patente { get; set; }
+        public dimProductos Producto { get; set; }
 
     }
 }
