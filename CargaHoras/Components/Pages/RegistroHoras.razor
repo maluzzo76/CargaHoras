@@ -42,8 +42,8 @@
 	</div>
 	<div class="col-md-3">
 		<div class="input-group mb-3 input-group-sm">
-			<i class="bi bi-search" @onclick="()=> cargarTareas()"></i>
-			<i class="bi bi-x-lg" @onclick="()=> CleaFilters()"></i>
+			<i class="bi bi-search btn" @onclick="()=> cargarTareas()">  </i>
+			<i class="bi bi-x-lg btn" @onclick="()=> CleaFilters()"></i>
 		</div>
 	</div>
 </div>
@@ -86,7 +86,7 @@
 					<tr>
 						<td>
 							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Tarea</span>
+								<span class="input-group-text" style="width:100px;">Area Funcional</span>
 								<select @bind="_newTarea.areaFuncionalId" class="form-select">
 									<option value="0">Seleccione una Tarea</option>
 									@foreach (var Tarea in lAreaFuncional)
@@ -100,13 +100,8 @@
 					<tr>
 						<td>
 							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Estado</span>
-								<select @bind="_newTarea.estado" class="form-select">
-									<option value="0">Estado</option>
-									<option value="Estado 1">Estado 1</option>
-									<option value="Estado 2">Estado 2</option>
-									<option value="Estado 3">Estado 3</option>
-								</select>
+								<span class="input-group-text" style="width:100px;">Tarea</span>
+								<textarea rows="3" cols="2" class="form-control" @bind=_newTarea.tarea />
 							</div>
 						</td>
 					</tr>
@@ -177,8 +172,8 @@
 			<th>Usuario</th>
 			<th>Fecha</th>
 			<th>Cliente</th>
-			<th>Tareas</th>
-			<th>Estado</th>
+			<th>Area Funcional</th>
+			<th>Tarea</th>
 			<th>Patente</th>
 			<th>Producto</th>
 			<th>Horas</th>
@@ -199,8 +194,8 @@
 				<td>@_t.fecha</td>
 				<td>@_t.Cliente.nombre</td>
 				<td>@_t.AreaFuncional.nombre</td>
-				<td>@_t.estado</td>
-				<td>@_t.Patente.nombre</td>
+				<td>@_t.tarea</td>
+				<td>@(_t?.Patente?.nombre ?? "")</td>
 				<td>@_t.Producto.nombre</td>
 				<td>@($"{_t.horas}:{_t.minutos.ToString().PadLeft(2, char.Parse("0"))}:00")</td>
 				<td>
@@ -243,10 +238,10 @@
 		.Include(p => p.Patente)
 		.Include(pr => pr.Producto)
 		.Include(a => a.AreaFuncional).
-		Where(w => w.Usuario.Equals(AppState.UserName) 
+		Where(w => w.Usuario.Equals(AppState.UserName)
 					&& w.Cliente.nombre.Contains(sCliente)
 					&& w.AreaFuncional.nombre.Contains(sTarea)
-					&& w.Producto.nombre.Contains(sProducto)	
+					&& w.Producto.nombre.Contains(sProducto)
 				)
 		.ToList();
 
@@ -264,7 +259,7 @@
 	private void CalcularHoras()
 	{
 		var _MinutosHoras = ltareas.Sum(o => o.horas) * 60;
-		var _MinutosTotales = ltareas.Sum(o => o.minutos) + _MinutosHoras;
+		var _MinutosTotales =  ltareas.Sum(o => o.minutos) + _MinutosHoras;
 		_TotalHoras = TimeSpan.FromMinutes(_MinutosTotales);
 	}
 
@@ -272,6 +267,10 @@
 	{
 		try
 		{
+			_newTarea.patenteId = (_newTarea.patenteId.Equals(0)) ? null : _newTarea.patenteId;
+			_newTarea.clienteId = (_newTarea.clienteId.Equals(0)) ? null : _newTarea.clienteId;
+			_newTarea.areaFuncionalId = (_newTarea.areaFuncionalId.Equals(0)) ? null : _newTarea.areaFuncionalId;
+			_newTarea.productoId = (_newTarea.productoId.Equals(0)) ? null : _newTarea.productoId;
 
 			if (_newTarea.id > 0)
 			{

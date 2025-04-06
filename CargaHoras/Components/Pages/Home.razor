@@ -17,7 +17,7 @@
 </h1>
 
 <div class="d-flex justify-content-end ">
-	<i style="font-size:16pt;">Total Horas Registradas   <span class="badge bg-warning text-black">@_TotalHoras</span></i>
+	<i style="font-size:16pt;">Total Horas Registradas   <span class="badge bg-warning text-black">@_TotalHoras hs</span></i>
 </div>
 <hr />
 <!--Filtros-->
@@ -30,7 +30,7 @@
 	</div>
 	<div class="col-md-3">
 		<div class="input-group mb-3 input-group-sm">
-			<span class="input-group-text">Tarea</span>
+			<span class="input-group-text">Area fun.</span>
 			<input type="text" class="form-control" @bind=sTarea>
 		</div>
 	</div>
@@ -42,10 +42,12 @@
 	</div>
 	<div class="col-md-3">
 		<div class="input-group mb-3 input-group-sm">
+			<span class="input-group-text">Patente</span>
+			<input type="text" class="form-control" @bind=sPatente>			
 			<i class="bi bi-search btn" @onclick="()=> cargarTareas()">  </i>
-			<i class="bi bi-x-lg btn" @onclick="()=> CleaFilters()"></i>
+			<i class="bi bi-x-lg btn" @onclick="()=> CleaFilters()"></i>			
 		</div>
-	</div>
+	</div>	
 </div>
 
 <div class="modal fade" id="myModal">
@@ -86,7 +88,7 @@
 					<tr>
 						<td>
 							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Tarea</span>
+								<span class="input-group-text" style="width:100px;">Area Funcional</span>
 								<select @bind="_newTarea.areaFuncionalId" class="form-select">
 									<option value="0">Seleccione una Tarea</option>
 									@foreach (var Tarea in lAreaFuncional)
@@ -100,13 +102,8 @@
 					<tr>
 						<td>
 							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Estado</span>
-								<select @bind="_newTarea.estado" class="form-select">
-									<option value="0">Estado</option>
-									<option value="Estado 1">Estado 1</option>
-									<option value="Estado 2">Estado 2</option>
-									<option value="Estado 3">Estado 3</option>
-								</select>
+								<span class="input-group-text" style="width:100px;">Tarea</span>
+								<textarea rows="3" cols="2" class="form-control" @bind=_newTarea.tarea />
 							</div>
 						</td>
 					</tr>
@@ -114,13 +111,18 @@
 						<td>
 							<div class="col input-group mb-3 input-group-sm">
 								<span class="input-group-text" style="width:100px;">Patente</span>
-								<select @bind="_newTarea.patenteId" class="form-select">
-									<option value="0">Seleccione una Patente</option>
-									@foreach (var Patente in lPatentes)
+								<input class="form-control"
+								list="patenteList"
+								@bind="_patenteNombre"
+								@oninput="OnPatenteInput"
+								placeholder="Seleccione una Patente" />
+
+								<datalist id="patenteList" >
+									@foreach (var patente in lPatentes)
 									{
-										<option value="@Patente.id">@Patente.nombre</option>
+										<option class="bg-info" value="@patente.nombre" />
 									}
-								</select>
+								</datalist>
 							</div>
 						</td>
 					</tr>
@@ -170,53 +172,57 @@
 	</div>
 </div>
 
-
-<table class="table">
-	<thead>
-		<tr>
-			<th>Usuario</th>
-			<th>Fecha</th>
-			<th>Cliente</th>
-			<th>Tareas</th>
-			<th>Estado</th>
-			<th>Patente</th>
-			<th>Producto</th>
-			<th>Horas</th>
-			<th></th>
-			<th></th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td colspan="8">
-			</td>
-
-		</tr>
-		@foreach (var _t in ltareas)
-		{
+<div style="overflow-x:auto; height: 60vh;">
+	<table class="table table-striped">
+		<thead style=" position: sticky; top: 0; z-index: 1;">
 			<tr>
-				<td>@_t.Usuario</td>
-				<td>@_t.fecha</td>
-				<td>@_t.Cliente.nombre</td>
-				<td>@_t.AreaFuncional.nombre</td>
-				<td>@_t.estado</td>
-				<td>@(_t?.Patente?.nombre ?? "")</td>
-				<td>@_t.Producto.nombre</td>
-				<td>@($"{_t.horas}:{_t.minutos.ToString().PadLeft(2, char.Parse("0"))}:00")</td>
-				<td>
-					<i class="bi bi-pencil" @onclick="() => Edit(_t.id)" data-bs-toggle="modal" data-bs-target="#myModal"></i>
-				</td>
-				<td>
-					<i class="bi bi-trash3" @onclick="() => Delete(_t.id)"></i>
-				</td>
+				<th>Usuario</th>
+				<th>Fecha</th>
+				<th>Cliente</th>
+				<th>Area Funcional</th>
+				<th>Tarea</th>
+				<th>Patente</th>
+				<th>Producto</th>
+				<th>Horas</th>
+				<th></th>
+				<th></th>
 			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			<tr>
+				<td colspan="8">
+				</td>
+
+			</tr>
+			@foreach (var _t in ltareas)
+			{
+				<tr>
+					<td>@_t.Usuario</td>
+					<td>@_t.fecha.ToString("dd/MM/yyyy")</td>
+					<td>@_t.Cliente.nombre</td>
+					<td>@_t.AreaFuncional.nombre</td>
+					<td style="max-width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" title="@_t.tarea">
+						@_t.tarea
+					</td>
+					<td>@(_t?.Patente?.nombre ?? "")</td>
+					<td>@_t.Producto.nombre</td>
+					<td>@($"{_t.horas}:{_t.minutos.ToString().PadLeft(2, char.Parse("0"))}:00")</td>
+					<td>
+						<i class="bi bi-pencil" @onclick="() => Edit(_t.id)" data-bs-toggle="modal" data-bs-target="#myModal"></i>
+					</td>
+					<td>
+						<i class="bi bi-trash3" @onclick="() => Delete(_t.id)"></i>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
 
 @code {
 
-	private TimeSpan _TotalHoras = TimeSpan.FromMinutes(0);
+	private string _patenteNombre;
+	private double _TotalHoras = new double();
 	private Tareas _newTarea = new Tareas();
 	private IList<Tareas> ltareas = new List<Tareas>();
 	private IList<dimClientes> lClientes = new List<dimClientes>();
@@ -226,6 +232,7 @@
 	private string sCliente = string.Empty;
 	private string sTarea = string.Empty;
 	private string sProducto = string.Empty;
+	private string sPatente = string.Empty;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -239,6 +246,7 @@
 
 	private void cargarTareas()
 	{
+
 		ltareas = _context.Tareas.Include(c => c.Cliente)
 		.Include(p => p.Patente)
 		.Include(pr => pr.Producto)
@@ -247,8 +255,10 @@
 					&& w.Cliente.nombre.Contains(sCliente)
 					&& w.AreaFuncional.nombre.Contains(sTarea)
 					&& w.Producto.nombre.Contains(sProducto)
-				)
+					&& w.Patente.nombre.Contains(sPatente)
+				).OrderByDescending(o=>o.fecha)
 		.ToList();
+
 
 		CalcularHoras();
 		NuevaTareas();
@@ -265,7 +275,9 @@
 	{
 		var _MinutosHoras = ltareas.Sum(o => o.horas) * 60;
 		var _MinutosTotales = ltareas.Sum(o => o.minutos) + _MinutosHoras;
-		_TotalHoras = TimeSpan.FromMinutes(_MinutosTotales);
+		TimeSpan ts = TimeSpan.FromMinutes(_MinutosTotales);
+		// Total en horas decimales (por ejemplo, 112.83)
+		_TotalHoras = Math.Round(ts.TotalHours, 2);
 	}
 
 	private async Task Save()
@@ -317,7 +329,26 @@
 		sCliente = string.Empty;
 		sTarea = string.Empty;
 		sProducto = string.Empty;
+		sPatente = string.Empty;
 
 		cargarTareas();
+	}
+
+	private async Task OnPatenteInput(ChangeEventArgs e)
+	{
+		var _search = e.Value?.ToString();
+
+		// Buscar si el nombre coincide con alguna patente
+		var seleccionada = lPatentes.FirstOrDefault(p => p.nombre == _search);
+		if (seleccionada != null)
+		{
+			_newTarea.patenteId = seleccionada.id;
+			_patenteNombre = seleccionada.nombre;
+		}
+		else
+		{
+			_newTarea.patenteId = 0; // O null si es nullable
+			_patenteNombre = "";
+		}
 	}
 }

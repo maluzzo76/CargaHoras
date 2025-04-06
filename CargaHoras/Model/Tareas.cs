@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Identity;
 
 namespace CargaHoras.Model
@@ -11,12 +12,14 @@ namespace CargaHoras.Model
         public int? clienteId { get; set; }
         public int? areaFuncionalId { get; set; }
 
-        public string estado { get; set; } = "Nuevo";
+        [Required(ErrorMessage = "El nombre es obligatorio")]
+        public string tarea { get; set; } = "";
 
         public int? patenteId { get; set; }
         public int? productoId { get; set; }
+        [Required(ErrorMessage = "La Hora es obligatorio")]
         public int horas { get; set; }
-        public int minutos { get; set; }
+        public int minutos { get; set; } = 0;
 
         public DateTime horaRegistrada 
         {
