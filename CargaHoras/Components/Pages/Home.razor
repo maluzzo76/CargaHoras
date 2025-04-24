@@ -6,349 +6,382 @@
 
 <PageTitle>Registro Horas</PageTitle>
 
-
 <h1>
-	Registro Horas
-	<span>
-		<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal">
-			<i class="bi bi-alarm"> Agregar Horas</i>
-		</button>
-	</span>
+    Registro Horas
+    <span>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal">
+            <i class="bi bi-alarm"> Agregar Horas</i>
+        </button>
+    </span>
 </h1>
 
 <div class="d-flex justify-content-end ">
-	<i style="font-size:16pt;">Total Horas Registradas   <span class="badge bg-warning text-black">@_TotalHoras hs</span></i>
+    <i style="font-size:16pt;">Total Horas Registradas   <span class="badge bg-warning text-black">@_TotalHoras hs</span></i>
 </div>
 <hr />
 <!--Filtros-->
 <div class="row">
-	<div class="col-md-3">
-		<div class="input-group mb-3 input-group-sm">
-			<span class="input-group-text">Cliente</span>
-			<input type="text" class="form-control" @bind=sCliente>
-		</div>
-	</div>
-	<div class="col-md-3">
-		<div class="input-group mb-3 input-group-sm">
-			<span class="input-group-text">Area fun.</span>
-			<input type="text" class="form-control" @bind=sTarea>
-		</div>
-	</div>
-	<div class="col-md-3">
-		<div class="input-group mb-3 input-group-sm">
-			<span class="input-group-text">Producto</span>
-			<input type="text" class="form-control" @bind=sProducto>
-		</div>
-	</div>
-	<div class="col-md-3">
-		<div class="input-group mb-3 input-group-sm">
-			<span class="input-group-text">Patente</span>
-			<input type="text" class="form-control" @bind=sPatente>			
-			<i class="bi bi-search btn" @onclick="()=> cargarTareas()">  </i>
-			<i class="bi bi-x-lg btn" @onclick="()=> CleaFilters()"></i>			
-		</div>
-	</div>	
+    <div class="col-md-3">
+        <div class="input-group mb-3 input-group-sm">
+            <span class="input-group-text">Cliente</span>
+            <input type="text" class="form-control" @bind=sCliente>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group mb-3 input-group-sm">
+            <span class="input-group-text">Area fun.</span>
+            <input type="text" class="form-control" @bind=sTarea>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group mb-3 input-group-sm">
+            <span class="input-group-text">Producto</span>
+            <input type="text" class="form-control" @bind=sProducto>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group mb-3 input-group-sm">
+            <span class="input-group-text">Patente</span>
+            <input type="text" class="form-control" @bind=sPatente>
+            <i class="bi bi-search btn" @onclick="()=> cargarTareas()">  </i>
+            <i class="bi bi-x-lg btn" @onclick="()=> CleaFilters()"></i>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="myModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-			<!-- Modal Header -->
-			<div class="modal-header">
-				<h4 class="modal-title">Registro de Horas</h4>
-				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-			</div>
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Registro de Horas</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
-			<!-- Modal body -->
-			<div class="modal-body d-flex justify-content-center">
-				<table>
-					<tr>
-						<td>
-							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Fecha</span>
-								<input type="date" class="form-control" @bind=_newTarea.fecha />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Cliente</span>
-								<select @bind="_newTarea.clienteId" class="form-select">
-									<option value="0">Seleccione un Cliente</option>
-									@foreach (var Cliente in lClientes)
-									{
-										<option value="@Cliente.id">@Cliente.nombre</option>
-									}
-								</select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Area Funcional</span>
-								<select @bind="_newTarea.areaFuncionalId" class="form-select">
-									<option value="0">Seleccione una Tarea</option>
-									@foreach (var Tarea in lAreaFuncional)
-									{
-										<option value="@Tarea.id">@Tarea.nombre</option>
-									}
-								</select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Tarea</span>
-								<textarea rows="3" cols="2" class="form-control" @bind=_newTarea.tarea />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Patente</span>
-								<input class="form-control"
-								list="patenteList"
-								@bind="_patenteNombre"
-								@oninput="OnPatenteInput"
-								placeholder="Seleccione una Patente" />
+            <!-- Modal body -->
+            <div class="modal-body d-flex justify-content-center">
+                <EditForm Model="_newTarea" OnValidSubmit="Save">
+                    <DataAnnotationsValidator />
+                    <Microsoft.AspNetCore.Components.Forms.ValidationSummary />
 
-								<datalist id="patenteList" >
-									@foreach (var patente in lPatentes)
-									{
-										<option class="bg-info" value="@patente.nombre" />
-									}
-								</datalist>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Producto</span>
-								<select @bind="_newTarea.productoId" class="form-select">
-									<option value="0">Seleccione un Producto</option>
-									@foreach (var Producto in lProductos)
-									{
-										<option value="@Producto.id">@Producto.nombre</option>
-									}
-								</select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Horas</span>
-								<input type="number" class="form-control" @bind=_newTarea.horas placeholder="Hs" />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="col input-group mb-3 input-group-sm">
-								<span class="input-group-text" style="width:100px;">Minutos</span>
-								<input type="number" class="form-control" @bind=_newTarea.minutos placeholder="Min" />
-							</div>
-						</td>
-					</tr>
-				</table>
+                    
+                    <table>
+                        <!-- Fecha -->
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <span class="input-group-text" style="width:100px;">Fecha</span>
+                                    <InputDate class="form-control" @bind-Value="_newTarea.fecha" required />
+                                  
+                                </div>
+                            </td>
+                        </tr>
 
-			</div>
+                        <!-- Cliente -->
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <span class="input-group-text" style="width:100px;">Cliente</span>
+                                    <InputSelect class="form-select" @bind-Value="_newTarea.clienteId" required>
+                                        <option value="0">Seleccione un Cliente</option>
+                                        @foreach (var cliente in lClientes)
+                                        {
+                                            <option value="@cliente.id">@cliente.nombre</option>
+                                        }
+                                    </InputSelect>
+                                  
+                                </div>
+                            </td>
+                        </tr>
 
-			<!-- Modal footer -->
-			<div class="modal-footer">
-				<button class="btn btn-success" data-bs-dismiss="modal" style="padding:5px;" @onclick="() => Save()">
-					<i class="bi bi-floppy"> Guardar</i>
-				</button>
-				<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-			</div>
+                        <!-- Área Funcional -->
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <span class="input-group-text" style="width:100px;">Área Funcional</span>
+                                    <InputSelect class="form-select" @bind-Value="_newTarea.areaFuncionalId" required>
+                                        <option value="0">Seleccione un Área</option>
+                                        @foreach (var area in lAreaFuncional)
+                                        {
+                                            <option value="@area.id">@area.nombre</option>
+                                        }
+                                    </InputSelect>
+                                 
+                                </div>
+                            </td>
+                        </tr>
 
-		</div>
-	</div>
+                        <!-- Tarea -->
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <span class="input-group-text" style="width:100px;">Tarea</span>
+                                    <InputTextArea class="form-control" @bind-Value="_newTarea.tarea" rows="3" required />
+                                   
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Patente (con datalist) -->
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <span class="input-group-text" style="width:100px;">Patente</span>
+                                    <input class="form-control"
+                                           list="patenteList"
+                                           @bind="_patenteNombre"
+                                           @oninput="OnPatenteInput"
+                                           placeholder="Seleccione una Patente" required />
+                                    <datalist id="patenteList">
+                                        @foreach (var patente in lPatentes)
+                                        {
+                                            <option value="@patente.nombre" />
+                                        }
+                                    </datalist>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Producto -->
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <span class="input-group-text" style="width:100px;">Producto</span>
+                                    <InputSelect class="form-select" @bind-Value="_newTarea.productoId" required>
+                                        <option value="0">Seleccione un Producto</option>
+                                        @foreach (var producto in lProductos)
+                                        {
+                                            <option value="@producto.id">@producto.nombre</option>
+                                        }
+                                    </InputSelect>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Horas -->
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <span class="input-group-text" style="width:100px;">Horas</span>
+                                    <InputNumber class="form-control" @bind-Value="_newTarea.horas" required />
+                                  
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Minutos -->
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3 input-group-sm">
+                                    <span class="input-group-text" style="width:100px;">Minutos</span>
+                                    <InputNumber class="form-control" @bind-Value="_newTarea.minutos" required />
+                                   
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Botón de Guardar -->
+                        <tr>
+                            <td>
+                                <button class="btn btn-success" type="submit">
+                                    Guardar
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </EditForm>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button class="btn btn-success" data-bs-dismiss="modal" style="padding:5px;" @onclick="() => Save()">
+                    <i class="bi bi-floppy"> Guardar</i>
+                </button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div style="overflow-x:auto; height: 60vh;">
-	<table class="table table-striped">
-		<thead style=" position: sticky; top: 0; z-index: 1;">
-			<tr>
-				<th>Usuario</th>
-				<th>Fecha</th>
-				<th>Cliente</th>
-				<th>Area Funcional</th>
-				<th>Tarea</th>
-				<th>Patente</th>
-				<th>Producto</th>
-				<th>Horas</th>
-				<th></th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td colspan="8">
-				</td>
+    <table class="table table-striped">
+        <thead style=" position: sticky; top: 0; z-index: 1;">
+            <tr>
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Area Funcional</th>
+                <th>Tarea</th>
+                <th>Patente</th>
+                <th>Producto</th>
+                <th>Horas</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="8">
+                </td>
 
-			</tr>
-			@foreach (var _t in ltareas)
-			{
-				<tr>
-					<td>@_t.Usuario</td>
-					<td>@_t.fecha.ToString("dd/MM/yyyy")</td>
-					<td>@_t.Cliente.nombre</td>
-					<td>@_t.AreaFuncional.nombre</td>
-					<td style="max-width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" title="@_t.tarea">
-						@_t.tarea
-					</td>
-					<td>@(_t?.Patente?.nombre ?? "")</td>
-					<td>@_t.Producto.nombre</td>
-					<td>@($"{_t.horas}:{_t.minutos.ToString().PadLeft(2, char.Parse("0"))}:00")</td>
-					<td>
-						<i class="bi bi-pencil" @onclick="() => Edit(_t.id)" data-bs-toggle="modal" data-bs-target="#myModal"></i>
-					</td>
-					<td>
-						<i class="bi bi-trash3" @onclick="() => Delete(_t.id)"></i>
-					</td>
-				</tr>
-			}
-		</tbody>
-	</table>
-</div>
+            </tr>
+            @foreach (var _t in ltareas)
+            {
+                <tr>
+                    <td>@_t.Usuario</td>
+                    <td>@_t.fecha.ToString("dd/MM/yyyy")</td>
+                    <td>@_t.Cliente.nombre</td>
+                    <td>@_t.AreaFuncional.nombre</td>
+                    <td style="max-width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" title="@_t.tarea">
+                        @_t.tarea
+                    </td>
+                    <td>@(_t?.Patente?.nombre ?? "")</td>
+                    <td>@_t.Producto.nombre</td>
+                    <td>@($"{_t.horas}:{_t.minutos.ToString().PadLeft(2, char.Parse("0"))}:00")</td>
+                    <td>
+                        <i class="bi bi-pencil" @onclick="() => Edit(_t.id)" data-bs-toggle="modal" data-bs-target="#myModal"></i>
+                    </td>
+                    <td>
+                        <i class="bi bi-trash3" @onclick="() => Delete(_t.id)"></i>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>  
 
 @code {
+    private bool isFormValid = true;
+    private string _patenteNombre;
+    private double _TotalHoras = new double();
+    private Tareas _newTarea = new Tareas();
+    private IList<Tareas> ltareas = new List<Tareas>();
+    private IList<dimClientes> lClientes = new List<dimClientes>();
+    private IList<dimAreaFuncional> lAreaFuncional = new List<dimAreaFuncional>();
+    private IList<dimPatentes> lPatentes = new List<dimPatentes>();
+    private IList<dimProductos> lProductos = new List<dimProductos>();
+    private string sCliente = string.Empty;
+    private string sTarea = string.Empty;
+    private string sProducto = string.Empty;
+    private string sPatente = string.Empty;
 
-	private string _patenteNombre;
-	private double _TotalHoras = new double();
-	private Tareas _newTarea = new Tareas();
-	private IList<Tareas> ltareas = new List<Tareas>();
-	private IList<dimClientes> lClientes = new List<dimClientes>();
-	private IList<dimAreaFuncional> lAreaFuncional = new List<dimAreaFuncional>();
-	private IList<dimPatentes> lPatentes = new List<dimPatentes>();
-	private IList<dimProductos> lProductos = new List<dimProductos>();
-	private string sCliente = string.Empty;
-	private string sTarea = string.Empty;
-	private string sProducto = string.Empty;
-	private string sPatente = string.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+        lClientes = AppState.lClientes;
+        lAreaFuncional = AppState.lAreaFuncional;
+        lPatentes = AppState.lPatentes;
+        lProductos = AppState.lProductos;
+        NuevaTareas();
+        cargarTareas();
+    }
 
-	protected override async Task OnInitializedAsync()
-	{
-		lClientes = AppState.lClientes;
-		lAreaFuncional = AppState.lAreaFuncional;
-		lPatentes = AppState.lPatentes;
-		lProductos = AppState.lProductos;
-		await NuevaTareas();
-		cargarTareas();
-	}
+    private void cargarTareas()
+    {
+        ltareas = _context.Tareas.Include(c => c.Cliente)
+            .Include(p => p.Patente)
+            .Include(pr => pr.Producto)
+            .Include(a => a.AreaFuncional)
+            .Where(w => w.Usuario.Equals(AppState.UserName)
+                && w.Cliente.nombre.Contains(sCliente)
+                && w.AreaFuncional.nombre.Contains(sTarea)
+                && w.Producto.nombre.Contains(sProducto)
+                && w.Patente.nombre.Contains(sPatente)
+            ).OrderByDescending(o => o.fecha)
+            .ToList();
 
-	private void cargarTareas()
-	{
+        CalcularHoras();
+        NuevaTareas();
+    }
 
-		ltareas = _context.Tareas.Include(c => c.Cliente)
-		.Include(p => p.Patente)
-		.Include(pr => pr.Producto)
-		.Include(a => a.AreaFuncional).
-		Where(w => w.Usuario.Equals(AppState.UserName)
-					&& w.Cliente.nombre.Contains(sCliente)
-					&& w.AreaFuncional.nombre.Contains(sTarea)
-					&& w.Producto.nombre.Contains(sProducto)
-					&& w.Patente.nombre.Contains(sPatente)
-				).OrderByDescending(o=>o.fecha)
-		.ToList();
+    private async Task NuevaTareas()
+    {
+        _newTarea = new Tareas();
+        _newTarea.Usuario = AppState.UserName;
+        CalcularHoras();
+    }
 
+    private void CalcularHoras()
+    {
+        var _MinutosHoras = ltareas.Sum(o => o.horas) * 60;
+        var _MinutosTotales = ltareas.Sum(o => o.minutos) + _MinutosHoras;
+        TimeSpan ts = TimeSpan.FromMinutes(_MinutosTotales);
+        _TotalHoras = Math.Round(ts.TotalHours, 2);
+    }
 
-		CalcularHoras();
-		NuevaTareas();
-	}
+    private async Task Save()
+    {
+        // Reset validation state
+        isFormValid = true;
 
-	private async Task NuevaTareas()
-	{
-		_newTarea = new Tareas();
-		_newTarea.Usuario = AppState.UserName;
-		CalcularHoras();
-	}
+        // Validate the form manually if needed
+       
 
-	private void CalcularHoras()
-	{
-		var _MinutosHoras = ltareas.Sum(o => o.horas) * 60;
-		var _MinutosTotales = ltareas.Sum(o => o.minutos) + _MinutosHoras;
-		TimeSpan ts = TimeSpan.FromMinutes(_MinutosTotales);
-		// Total en horas decimales (por ejemplo, 112.83)
-		_TotalHoras = Math.Round(ts.TotalHours, 2);
-	}
+        try
+        {
+            _newTarea.patenteId = (_newTarea.patenteId.Equals(0)) ? null : _newTarea.patenteId;
+            _newTarea.clienteId = (_newTarea.clienteId.Equals(0)) ? null : _newTarea.clienteId;
+            _newTarea.areaFuncionalId = (_newTarea.areaFuncionalId.Equals(0)) ? null : _newTarea.areaFuncionalId;
+            _newTarea.productoId = (_newTarea.productoId.Equals(0)) ? null : _newTarea.productoId;
 
-	private async Task Save()
-	{
-		try
-		{
-			_newTarea.patenteId = (_newTarea.patenteId.Equals(0)) ? null : _newTarea.patenteId;
-			_newTarea.clienteId = (_newTarea.clienteId.Equals(0)) ? null : _newTarea.clienteId;
-			_newTarea.areaFuncionalId = (_newTarea.areaFuncionalId.Equals(0)) ? null : _newTarea.areaFuncionalId;
-			_newTarea.productoId = (_newTarea.productoId.Equals(0)) ? null : _newTarea.productoId;
+            if (_newTarea.id > 0)
+            {
+                _context.Tareas.Update(_newTarea);
+                _context.SaveChanges();
+            }
+            else
+            {
+                _context.Tareas.Add(_newTarea);
+                _context.SaveChanges();
+            }
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
 
-			if (_newTarea.id > 0)
-			{
-				_context.Tareas.Update(_newTarea);
-				_context.SaveChanges();
-			}
-			else
-			{
-				_context.Tareas.Add(_newTarea);
-				_context.SaveChanges();
-			}
-		}
-		catch (Exception e)
-		{
-			throw e;
-		}
-		//System.Threading.Thread.Sleep(3000);
-		cargarTareas();
-	}
+        cargarTareas();
+    }
 
-	private async Task Delete(int id)
-	{
-		_newTarea = _context.Tareas.Find(id);
-		if (_newTarea != null)
-		{
-			_context.Tareas.Remove(_newTarea);
-			_context.SaveChanges();
-			cargarTareas();
-		}
-	}
+    private async Task Delete(int id)
+    {
+        _newTarea = _context.Tareas.Find(id);
+        if (_newTarea != null)
+        {
+            _context.Tareas.Remove(_newTarea);
+            _context.SaveChanges();
+            cargarTareas();
+        }
+    }
 
-	private async Task Edit(int id)
-	{
-		_newTarea = _context.Tareas.Find(id);
-	}
+    private async Task Edit(int id)
+    {
+        _newTarea = _context.Tareas.Find(id);
+    }
 
-	private async Task CleaFilters()
-	{
-		sCliente = string.Empty;
-		sTarea = string.Empty;
-		sProducto = string.Empty;
-		sPatente = string.Empty;
+    private async Task CleaFilters()
+    {
+        sCliente = string.Empty;
+        sTarea = string.Empty;
+        sProducto = string.Empty;
+        sPatente = string.Empty;
 
-		cargarTareas();
-	}
+        cargarTareas();
+    }
 
-	private async Task OnPatenteInput(ChangeEventArgs e)
-	{
-		var _search = e.Value?.ToString();
-
-		// Buscar si el nombre coincide con alguna patente
-		var seleccionada = lPatentes.FirstOrDefault(p => p.nombre == _search);
-		if (seleccionada != null)
-		{
-			_newTarea.patenteId = seleccionada.id;
-			_patenteNombre = seleccionada.nombre;
-		}
-		else
-		{
-			_newTarea.patenteId = 0; // O null si es nullable
-			_patenteNombre = "";
-		}
-	}
+    private async Task OnPatenteInput(ChangeEventArgs e)
+    {
+        var _search = e.Value?.ToString();
+        var seleccionada = lPatentes.FirstOrDefault(p => p.nombre == _search);
+        if (seleccionada != null)
+        {
+            _newTarea.patenteId = seleccionada.id;
+            _patenteNombre = seleccionada.nombre;
+        }
+        else
+        {
+            _newTarea.patenteId = 0; // O null si es nullable
+            _patenteNombre = "";
+        }
+    }
 }
