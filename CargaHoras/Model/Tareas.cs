@@ -11,7 +11,7 @@ namespace CargaHoras.Model
         public int id { get; set; }
         public DateTime fecha { get; set; } = DateTime.Now;
 
-        [Required(ErrorMessage ="Debe seleccionar un cliente")]
+       
         public int? clienteId { get; set; }
         public int? areaFuncionalId { get; set; }
 

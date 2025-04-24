@@ -82,15 +82,18 @@
                         <tr>
                             <td>
                                 <div class="input-group mb-3 input-group-sm">
-                                    <span class="input-group-text" style="width:100px;">Cliente</span>
-                                    <InputSelect class="form-select" @bind-Value="_newTarea.clienteId" required>
-                                        <option value="0">Seleccione un Cliente</option>
+                                    <span class="input-group-text" style="width:100px;">Cliente</span>                                    
+                                    <input class="form-control"
+                                           list="clienteList"
+                                           @bind="_clienteid"
+                                           @oninput="OnClienteInput"
+                                           placeholder="Seleccione un cliente" required />
+                                    <datalist id="clienteList">
                                         @foreach (var cliente in lClientes)
                                         {
-                                            <option value="@cliente.id">@cliente.nombre</option>
+                                            <option value="@cliente.nombre"></option>
                                         }
-                                    </InputSelect>
-                                  
+                                    </datalist>
                                 </div>
                             </td>
                         </tr>
@@ -194,12 +197,7 @@
             </div>
 
             <!-- Modal footer -->
-            <div class="modal-footer">
-                <button class="btn btn-success" data-bs-dismiss="modal" style="padding:5px;" @onclick="() => Save()">
-                    <i class="bi bi-floppy"> Guardar</i>
-                </button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-            </div>
+           
         </div>
     </div>
 </div>
@@ -254,6 +252,7 @@
 @code {
     private bool isFormValid = true;
     private string _patenteNombre;
+    private string _clienteid;
     private double _TotalHoras = new double();
     private Tareas _newTarea = new Tareas();
     private IList<Tareas> ltareas = new List<Tareas>();
@@ -320,7 +319,7 @@
         try
         {
             _newTarea.patenteId = (_newTarea.patenteId.Equals(0)) ? null : _newTarea.patenteId;
-            _newTarea.clienteId = (_newTarea.clienteId.Equals(0)) ? null : _newTarea.clienteId;
+            _newTarea.clienteId = (_newTarea.clienteId.Equals(0)) ? 0 : _newTarea.clienteId;
             _newTarea.areaFuncionalId = (_newTarea.areaFuncionalId.Equals(0)) ? null : _newTarea.areaFuncionalId;
             _newTarea.productoId = (_newTarea.productoId.Equals(0)) ? null : _newTarea.productoId;
 
@@ -382,6 +381,22 @@
         {
             _newTarea.patenteId = 0; // O null si es nullable
             _patenteNombre = "";
+        }
+    }
+
+    private async Task OnClienteInput(ChangeEventArgs e)
+    {
+        var _search = e.Value?.ToString();
+        var seleccionada = lClientes.FirstOrDefault(p => p.nombre == _search);
+        if (seleccionada != null)
+        {
+            _newTarea.clienteId = seleccionada.id;
+            _clienteid = seleccionada.nombre;
+        }
+        else
+        {
+            _newTarea.clienteId = 0; // O null si es nullable
+            _clienteid = "";
         }
     }
 }
