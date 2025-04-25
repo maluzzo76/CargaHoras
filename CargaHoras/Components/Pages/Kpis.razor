@@ -1,0 +1,139 @@
+﻿@page "/kpis"
+@using System.Globalization
+@inject IJSRuntime JSRuntime
+
+<div class="container mt-5">
+    <h2 class="mb-4 fw-bold text-primary">Dashboard de Tareas</h2>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 bg-light">
+                <div class="card-body d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="bi bi-calendar3 text-primary fs-2"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted">Total horas del mes</h6>
+                        <h4 class="mb-0 fw-bold">@CalculateTotalHoursByMonth() hs</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 bg-light">
+                <div class="card-body d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="bi bi-calendar-week text-success fs-2"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted">Total horas de la semana</h6>
+                        <h4 class="mb-0 fw-bold">@CalculateTotalHoursByWeek() hs</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 bg-light">
+                <div class="card-body d-flex align-items-center">
+                    <div class="me-3">
+                        <i class="bi bi-graph-up-arrow text-danger fs-2"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted">% del mes sobre total</h6>
+                        <h4 class="mb-0 fw-bold">@CalculatePercentageOfMonth().ToString("F1")%</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h5 class="text-secondary">Horas trabajadas por semana</h5>
+        <canvas id="weeklyChart" width="100%" height="50"></canvas>
+    </div>
+</div>
+
+@code {
+    private List<Tareas> ltareas = new()
+    {
+        new Tareas { Usuario = "Juan", fecha = new DateTime(2025, 4, 1), horas = 5 },
+        new Tareas { Usuario = "Pedro", fecha = new DateTime(2025, 4, 2), horas = 8 },
+        new Tareas { Usuario = "Maria", fecha = new DateTime(2025, 4, 3), horas = 6 },
+        new Tareas { Usuario = "Juan", fecha = new DateTime(2025, 3, 15), horas = 4 },
+        new Tareas { Usuario = "Pedro", fecha = new DateTime(2025, 3, 17), horas = 3 },
+        new Tareas { Usuario = "Maria", fecha = new DateTime(2025, 3, 19), horas = 2 },
+    };
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            DrawWeeklyChart();
+        }
+    }
+
+    private void DrawWeeklyChart()
+    {
+        var datos = ltareas.GroupBy(t => t.NumeroSemana)
+            .Select(g => new { Semana = $"Semana {g.Key}", Total = g.Sum(t => t.horas) })
+            .OrderBy(x => x.Semana)
+            .ToList();
+
+        var semanas = datos.Select(x => x.Semana).ToArray();
+        var horas = datos.Select(x => x.Total).ToArray();
+
+        var chartData = new
+        {
+            labels = semanas,
+            datasets = new[]
+            {
+                new {
+                    label = "Horas trabajadas",
+                    data = horas,
+                    backgroundColor = "rgba(54, 162, 235, 0.5)",
+                    borderColor = "rgba(54, 162, 235, 1)",
+                    borderWidth = 1
+                }
+            }
+        };
+
+        var chartOptions = new
+        {
+            responsive = true,
+            plugins = new
+            {
+                legend = new { position = "top" },
+                title = new { display = false }
+            }
+        };
+
+        var chartJs = $@"
+            var ctx = document.getElementById('weeklyChart').getContext('2d');
+            new Chart(ctx, {{
+                type: 'bar',
+                data: {System.Text.Json.JsonSerializer.Serialize(chartData)},
+                options: {System.Text.Json.JsonSerializer.Serialize(chartOptions)}
+            }});
+        ";
+
+        JSRuntime.InvokeVoidAsync("eval", chartJs);
+    }
+
+    private int CalculateTotalHoursByMonth() =>
+        ltareas.Where(t => t.fecha.Month == DateTime.Now.Month).Sum(t => t.horas);
+
+    private int CalculateTotalHoursByWeek()
+    {
+        var startOfWeek = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek + 1);
+        return ltareas.Where(t => t.PrimerDiaSemana == startOfWeek).Sum(t => t.horas);
+    }
+
+    private double CalculatePercentageOfMonth()
+    {
+        var monthTotal = CalculateTotalHoursByMonth();
+        var allTotal = ltareas.Sum(t => t.horas);
+        return allTotal == 0 ? 0 : (monthTotal / (double)allTotal) * 100;
+    }
+}
