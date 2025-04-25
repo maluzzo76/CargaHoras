@@ -15,6 +15,15 @@
 
     <script src="_content/Blazorise/blazorise.js"></script>
     <script src="_content/Blazorise.Bootstrap/blazorise.bootstrap.js"></script>
+    <link href="_content/Syncfusion.Blazor/styles/bootstrap5.css" rel="stylesheet" />
+
+    <script>
+        window.cerrarModalPorId = function (idModal) {
+            var modalEl = document.getElementById(idModal);
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.hide();
+        };
+    </script>
 
     <HeadOutlet />
 </head>

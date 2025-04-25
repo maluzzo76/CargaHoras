@@ -17,6 +17,7 @@ namespace CargaHoras.Data
             modelBuilder.Entity<dimPatentes>().ToTable("dimPatentes", schema: "whs");
             modelBuilder.Entity<dimProductos>().ToTable("dimProductos", schema: "whs");
             modelBuilder.Entity<Tareas>().ToTable("factTareas", schema: "whs");
+            modelBuilder.Entity<Configuracion>().ToTable("configch", schema: "dbo");
         }
 
         public DbSet<dimClientes> dimClientes{ get; set; }
@@ -24,6 +25,7 @@ namespace CargaHoras.Data
         public DbSet<dimPatentes> dimPatentes { get; set; }
         public DbSet<dimProductos> dimProductos { get; set; }
         public DbSet<Tareas> Tareas { get; set; }
+        public DbSet<Configuracion> Configuracion { get; set; }  
 
     }
 }

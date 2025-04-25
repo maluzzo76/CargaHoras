@@ -16,6 +16,17 @@ namespace CargaHoras
         public List<dimPatentes> lPatentes { get; set; }
 
         public List<dimProductos> lProductos{ get; set; }
-       
+
+        public string UserImageUrl { get; set; } = string.Empty;
+
+        public string DefaultCliente { get; set; } = string.Empty;
+        public string DefaultAreaFuncional { get; set; } = string.Empty;
+        public string DefaultProducto { get; set; } = string.Empty;
+        public int DefaultClienteId { get; set; } 
+        public int DefaultAreaFuncionalId { get; set; }
+        public int DefaultProductoId { get; set; }
+
+        public int NueroSemana { get; set; }
+
     }
 }

@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.Graph;
+@using Azure.Identity;
+@using System.Globalization
+@inherits LayoutComponentBase
 
 
 <div class="page">
@@ -25,6 +28,7 @@
 
 @code {
     private string userName = "Usuario desconocido";
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,13 +40,67 @@
             if (user.Identity.Name.Contains("@"))
                 userName = user.Identity.Name.Split(char.Parse("@"))[0] ?? "Sin nombre";
             else
-                userName = user.Identity.Name;
+                userName = user.Identity.Name;           
 
             AppState.UserName = userName;
             AppState.lClientes =  _context.dimClientes.OrderBy(o => o.nombre).ToList();
             AppState.lAreaFuncional = _context.dimAreaFuncional.OrderBy(o => o.nombre).ToList();
             AppState.lPatentes = _context.dimPatentes.OrderBy(o => o.nombre).ToList();
             AppState.lProductos = _context.dimProductos.OrderBy(o => o.nombre).ToList();
+            AppState.NueroSemana = GetNumeroSemana();
+            Configuracion _setDefault = createUser();
+
+
+            foreach (var _cli in AppState.lClientes.Where(w => w.id == _setDefault.ClienteId).ToList())
+            {
+                AppState.DefaultCliente = _cli.nombre;
+                AppState.DefaultClienteId = _cli.id;
+            }
+
+            foreach (var _area in AppState.lAreaFuncional.Where(w => w.id == _setDefault.AreaFuncionalId).ToList())
+            {
+                AppState.DefaultAreaFuncional = _area.nombre;
+                AppState.DefaultAreaFuncionalId = _area.id;                
+            }
+
+            foreach (var _prod in AppState.lProductos.Where(w => w.id == _setDefault.ProductoId).ToList())
+            {
+                AppState.DefaultProducto = _prod.nombre;
+                AppState.DefaultProductoId = _prod.id;
+            }
+
+
         }
+    }
+
+    private Configuracion createUser()
+    {
+        Configuracion _userConfig = new Configuracion();
+
+        if (_context.Configuracion.Where(w => w.Usuario == AppState.UserName).ToList().Count() < 1)
+        {
+            Configuracion _c = new Configuracion();
+            _c.Usuario = AppState.UserName;
+            _context.Configuracion.Add(_c);
+            _context.SaveChanges();
+        }
+
+        foreach (var _user in _context.Configuracion.Where(w => w.Usuario == AppState.UserName).ToList())
+        {
+            _userConfig  = _user;
+        }
+
+        return _userConfig;
+    }
+
+    private int GetNumeroSemana()
+    { 
+        DateTime fecha = DateTime.Now; // o cualquier otra fecha
+        CultureInfo cultura = CultureInfo.InvariantCulture;
+        System.Globalization.Calendar calendario = cultura.Calendar;
+        CalendarWeekRule reglaSemana = CalendarWeekRule.FirstFourDayWeek;
+        System.DayOfWeek primerDiaSemana = System.DayOfWeek.Monday;
+
+        return calendario.GetWeekOfYear(fecha, reglaSemana, primerDiaSemana);
     }
 }

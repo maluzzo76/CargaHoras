@@ -1,0 +1,200 @@
+﻿@page "/Config"
+@using Blazorise
+@using Blazorise.DataGrid
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+
+
+<PageTitle>Configuración</PageTitle>
+
+<div class="container py-4">
+    <h3 class="mb-4 text-primary">Configuración</h3>
+
+    @if (mostrarMensajeGuardado)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            Datos guardados exitosamente.
+            <button type="button" class="btn-close" @onclick="() => mostrarMensajeGuardado = false"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm rounded-4 border-0">
+        <div class="card-body">
+
+            <div class="d-flex align-items-center mb-4">
+                <img src="image/User.jpg" class="rounded-circle shadow-sm" style="width: 60px; height: 60px; object-fit: cover;" />
+                <h5 class="ms-3 mt-2 mb-0">@_confi.Usuario</h5>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-muted">Cliente</label>
+                <input class="form-control form-control-sm"
+                       list="clienteList"
+                       @bind="clienteNombre"
+                       @oninput="OnClienteInput"
+                       placeholder="Seleccione un cliente" />
+                <datalist id="clienteList">
+                    @foreach (var cliente in AppState.lClientes)
+                    {
+                        <option value="@cliente.nombre"></option>
+                    }
+                </datalist>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-muted">Área Funcional</label>
+                <input class="form-control form-control-sm"
+                       list="AreaList"
+                       @bind="areafuncionalNombre"
+                       @oninput="OnAreaInput"
+                       placeholder="Seleccione un área funcional" />
+                <datalist id="AreaList">
+                    @foreach (var area in AppState.lAreaFuncional)
+                    {
+                        <option value="@area.nombre"></option>
+                    }
+                </datalist>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-muted">Producto</label>
+                <input class="form-control form-control-sm"
+                       list="prodList"
+                       @bind="productoNombre"
+                       @oninput="OnProductosInput"
+                       placeholder="Seleccione un producto" />
+                <datalist id="prodList">
+                    @foreach (var prod in AppState.lProductos)
+                    {
+                        <option value="@prod.nombre"></option>
+                    }
+                </datalist>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button class="btn btn-primary btn-sm rounded-3" @onclick="Save">
+                    <i class="bi bi-save me-2"></i>Guardar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private string _user = "";
+    private Configuracion _confi = new Configuracion();
+    private string clienteNombre;
+    private string areafuncionalNombre;
+    private string productoNombre;
+    private bool mostrarMensajeGuardado = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _user = AppState.UserName;
+        foreach(Configuracion _c in _context.Configuracion.Where(w=> w.Usuario == AppState.UserName))
+        {
+            _confi = _c;
+            foreach (dimClientes _cli in AppState.lClientes.Where(w => w.id == _c.ClienteId).ToList())
+            {
+                clienteNombre = _cli.nombre;
+            }
+
+
+            foreach (dimAreaFuncional area in AppState.lAreaFuncional.Where(w => w.id == _c.AreaFuncionalId).ToList())
+            {
+                areafuncionalNombre = area.nombre;
+                
+            }
+
+            foreach (dimProductos prod in AppState.lProductos.Where(w => w.id == _c.ProductoId).ToList())
+            {
+                productoNombre = prod.nombre;
+            }
+        }
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            if (_confi.id > 0)
+            {
+                _context.Configuracion.Update(_confi);
+                _context.SaveChanges();
+            }
+            else
+            {
+                _context.Configuracion.Add(_confi);
+                _context.SaveChanges();
+            }
+
+            AppState.DefaultCliente = clienteNombre;
+            AppState.DefaultAreaFuncional = areafuncionalNombre;
+            AppState.DefaultProducto = productoNombre;
+
+            mostrarMensajeGuardado = true; // ✅ Activar el mensaje
+
+            // Opcional: ocultar el mensaje luego de unos segundos
+            await Task.Delay(3000);
+            mostrarMensajeGuardado = false;
+
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+   
+
+    private async Task OnClienteInput(ChangeEventArgs e)
+    {
+        var _search = e.Value?.ToString();
+        var seleccionada = AppState.lClientes.FirstOrDefault(p => p.nombre == _search);
+        if (seleccionada != null)
+        {
+            _confi.ClienteId = seleccionada.id;
+            clienteNombre = seleccionada.nombre;
+        }
+        else
+        {
+            _confi.ClienteId = 0; // O null si es nullable
+            clienteNombre = "";
+        }
+    }   
+
+    private async Task OnAreaInput(ChangeEventArgs e)
+    {
+        var _search = e.Value?.ToString();
+        var seleccionada = AppState.lAreaFuncional.FirstOrDefault(p => p.nombre == _search);
+        if (seleccionada != null)
+        {
+            _confi.AreaFuncionalId = seleccionada.id;
+            areafuncionalNombre = seleccionada.nombre;
+        }
+        else
+        {
+            _confi.AreaFuncionalId = 0;
+            areafuncionalNombre = "";
+        }
+    }
+
+    private async Task OnProductosInput(ChangeEventArgs e)
+    {
+        var _search = e.Value?.ToString();
+        var seleccionada = AppState.lProductos.FirstOrDefault(p => p.nombre == _search);
+        if (seleccionada != null)
+        {
+            _confi.ProductoId = seleccionada.id;
+            productoNombre = seleccionada.nombre;
+        }
+        else
+        {
+            _confi.ProductoId = 0;
+            productoNombre = "";
+        }
+    }
+
+}
