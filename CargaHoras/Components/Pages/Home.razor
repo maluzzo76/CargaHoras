@@ -295,78 +295,94 @@
 @{
     if (verCalendario)
     {
-        <div style="overflow-x:auto; max-height: 70vh; height: 80%; width: 100%; padding: 10px;">
-            <table class="table table-bordered table-hover" style="border-radius: 10px; border-collapse: separate; border-spacing: 0 5px;">
-                <thead class="bg-light text-dark" style="position: sticky; top: 0; z-index: 1;">
-                    <tr>
-                        <th class="text-center" style="width: 60px; font-size: 12pt; font-weight: 300; color: #555;">
-                            <i style="font-size: 10pt;">Hora</i>
-                        </th>
-                        @for (int _index = 0; _index < 5; _index++)
-                        {
-                            DateTime _dia = ltareas.Min(o => o.PrimerDiaSemana).AddDays(_index);
-                            <th class="text-center">
-                                <div class="d-flex flex-column align-items-center">
-                                    <p class="m-0" style="font-size: 12pt; font-weight: 400; color: #6c757d; font-family: 'Roboto', sans-serif;">
-                                        @{
-                                            var _dNombre = char.ToUpper(_dia.ToString("dddd")[0]) + _dia.ToString("dddd").Substring(1, 2);
-                                        }
-                                        @_dNombre
-                                    </p>
-                                    @if (_dia.Day.Equals(DateTime.Now.Date.Day))
-                                    {
-                                        <div style="width: 25px; height: 25px; border-radius: 50%; background-color: darkblue; color: white; font-size: 10pt; display: flex; justify-content: center; align-items: center; font-weight: bold;">
-                                            @_dia.Day
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div><i style="font-size: 10pt; color: #007BFF;">@_dia.Day</i></div>
-                                    }
-                                </div>
-                            </th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int _hora = 7; _hora < 20; _hora++)
-                    {
+        <div style="padding: 10px;">
+            <!-- Título con Icono de Bootstrap -->
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                <!-- Icono de Bootstrap -->
+                <i class="bi bi-calendar3" style="font-size: 30px; color: #007BFF; margin-right: 10px;"></i>
+                <!-- Título -->
+                <h3 style="font-size: 18pt; color: #333; font-weight: 500;">Calendario</h3>
+            </div>
+            <div style="overflow-x:auto; max-height: 68vh; height: 80%; width: 100%; padding: 10px;">
+                <table class="table table-bordered table-hover" style="border-radius: 10px; border-collapse: separate; border-spacing: 0 5px;">
+                    <thead class="bg-light text-dark" style="position: sticky; top: -10px; z-index: 1;">
                         <tr>
-                            <td class="text-center align-middle" style="font-size: 10pt; color: #4a4a4a;">
-                                <i>@_hora:00</i>
-                            </td>
+                            <th class="text-center" style="width: 60px; font-size: 12pt; font-weight: 300; color: #555;">
+                                <i style="font-size: 10pt;">Hora</i>
+                            </th>
                             @for (int _index = 0; _index < 5; _index++)
                             {
                                 DateTime _dia = ltareas.Min(o => o.PrimerDiaSemana).AddDays(_index);
-                                <td class="text-center" style="position: relative; vertical-align: middle; font-size: 9pt; color: #333; padding: 10px;">
-                                    @{
-                                        var _tHoras = CalcularHoras(_dia.Date, _hora);
-                                        if (_tHoras > 0)
+                                <th class="text-center">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <p class="m-0" style="font-size: 12pt; font-weight: 400; color: #6c757d; font-family: 'Roboto', sans-serif;">
+                                            @{
+                                                var _dNombre = char.ToUpper(_dia.ToString("dddd")[0]) + _dia.ToString("dddd").Substring(1, 2);
+                                            }
+                                            @_dNombre
+                                        </p>
+                                        @if (_dia.Day.Equals(DateTime.Now.Date.Day))
                                         {
-                                            <div class="d-flex flex-column align-items-center">
-                                                <span class="badge bg-success" style="font-size: 9pt; padding: 2px 5px; font-weight: normal;">
-                                                    <i class="bi bi-clock" style="font-size: 10pt;"></i> @_tHoras hs
-                                                </span>
-                                                <i class="bi bi-check-circle" style="font-size: 14pt; color: green;"></i>
+                                            <div style="width: 25px; height: 25px; border-radius: 50%; background-color: darkblue; color: white; font-size: 10pt; display: flex; justify-content: center; align-items: center; font-weight: bold;">
+                                                @_dia.Day
                                             </div>
                                         }
                                         else
                                         {
-                                            <i class="bi" style="font-size: 14pt; color: #007BFF;"></i> <!-- Icono de día sin tareas -->
+                                            <div><i style="font-size: 10pt; color: #007BFF;">@_dia.Day</i></div>
                                         }
-                                    }
-                                </td>
+                                    </div>
+                                </th>
                             }
                         </tr>
-                    }
-                </tbody>
-            </table>
-
+                    </thead>
+                    <tbody>
+                        @for (int _hora = 7; _hora < 20; _hora++)
+                        {
+                            <tr>
+                                <td class="text-center align-middle" style="font-size: 10pt; color: #4a4a4a;">
+                                    <i>@_hora:00</i>
+                                </td>
+                                @for (int _index = 0; _index < 5; _index++)
+                                {
+                                    DateTime _dia = ltareas.Min(o => o.PrimerDiaSemana).AddDays(_index);
+                                    <td class="text-center" style="position: relative; vertical-align: middle; font-size: 9pt; color: #333; padding: 10px;">
+                                        @{
+                                            var _tHoras = CalcularHoras(_dia.Date, _hora);
+                                            if (_tHoras > 0)
+                                            {
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <span class="badge bg-success" style="font-size: 9pt; padding: 2px 5px; font-weight: normal;">
+                                                        <i class="bi bi-clock" style="font-size: 10pt;"></i> @_tHoras hs
+                                                    </span>
+                                                    <i class="bi bi-check-circle" style="font-size: 14pt; color: green;"></i>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi" style="font-size: 14pt; color: #007BFF;"></i> <!-- Icono de día sin tareas -->
+                                            }
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
     else
     {
         <div style="max-height: 70vh; overflow-y: auto;">
+            <!-- Título con Icono de Bootstrap -->
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                <!-- Icono de Bootstrap -->
+                <i class="bi bi-card-list" style="font-size: 30px; color: #007BFF; margin-right: 10px;"></i>
+                <!-- Título -->
+                <h3 style="font-size: 18pt; color: #333; font-weight: 500;">Tarjetas</h3>
+            </div>
+
             @foreach (var t in ltareas)
             {
                 <div class="card mb-3 shadow-lg border-0 rounded-4" style="font-size: 0.9rem; background: transparent;">
@@ -409,6 +425,7 @@
             }
 
         </div>
+
     }
 }
 
