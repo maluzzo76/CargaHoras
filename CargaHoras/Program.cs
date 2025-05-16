@@ -9,9 +9,15 @@ using CargaHoras.Data;
 using Microsoft.EntityFrameworkCore;
 using Blazorise;
 using Blazorise.Bootstrap;
+using System.Globalization;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+var culture = new CultureInfo("es-AR");
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
+
 builder.Services.AddSingleton<AppState>();
 
 // Add services to the container.

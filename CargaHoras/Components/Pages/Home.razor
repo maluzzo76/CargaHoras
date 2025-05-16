@@ -18,9 +18,9 @@
 <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
     <!-- Sección Registro Horas y Botones -->
     <div class="w-50">
-        <h1 class="d-flex justify-content-between align-items-center flex-wrap">
-            <span>Registro Horas</span>
-        </h1>
+        <h2 class="d-flex justify-content-between align-items-center flex-wrap">
+            <span>Registro Horas - Semana @sSemana</span>
+        </h2>
         <!-- Botones de vista y Agregar Horas -->
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
             <!-- Botones de vista -->
@@ -75,6 +75,23 @@
             <div class="modal-body">
                 <!-- Filtros dentro del modal (formulario vertical) -->
                 <form>
+                    <div class="mb-3">
+                        <label for="semanaSelect" class="form-label">Semana del Año</label>
+                        <select class="form-select" id="semanaSelect" @bind="sSemana">
+                            <option value="">Todas</option>
+                            @for (int semana = 1; semana <= 53; semana++)
+                            {
+                                if (semana == AppState.NueroSemana)
+                                {
+                                    <option class="fw-bold btn-info" value="@semana">Semana @semana (Actual)</option>
+                                }
+                                else
+                                {
+                                    <option value="@semana">Semana @semana</option>
+                                }
+                            }
+                        </select>
+                    </div>
                     <div class="mb-3">
                         <label for="clienteInput" class="form-label">Cliente</label>
                         <input type="text" class="form-control" id="clienteInput" @bind=sCliente>
@@ -159,13 +176,17 @@
                         <!-- Cliente -->
                         <tr>
                             <td>
+                                @if (_clienteid == null)
+                                {
+                                    <div class="text-danger" style="font-size:10pt;">Debe seleccionar un cliente válido de la lista.</div>
+                                }
                                 <div class="input-group mb-3 input-group-sm">
                                     <span class="input-group-text" style="width:120px;">Cliente</span>
                                     <input class="form-select"
-                                    list="clienteList"
-                                    @bind="_clienteid"
-                                    @oninput="OnClienteInput"
-                                    placeholder="Seleccione un cliente" required />
+                                           list="clienteList"
+                                           @bind="_clienteid"
+                                           @oninput="OnClienteInput"
+                                           placeholder="Seleccione un cliente" required />
                                     <datalist id="clienteList">
                                         @foreach (var cliente in lClientes)
                                         {
@@ -173,19 +194,24 @@
                                         }
                                     </datalist>
                                 </div>
+
                             </td>
                         </tr>
 
                         <!-- Área Funcional -->
                         <tr>
                             <td>
+                                @if (_areaNombre == null)
+                                {
+                                    <div class="text-danger" style="font-size:10pt;">Debe seleccionar un Area válida de la lista.</div>
+                                }
                                 <div class="input-group mb-3 input-group-sm">
                                     <span class="input-group-text" style="width:120px;">Area Funcional</span>
                                     <input class="form-control"
-                                    list="areaList"
-                                    @bind="_areaNombre"
-                                    @oninput="OnAreaInput"
-                                    placeholder="Seleccione un area" required />
+                                           list="areaList"
+                                           @bind="_areaNombre"
+                                           @oninput="OnAreaInput"
+                                           placeholder="Seleccione un area" required />
                                     <datalist id="areaList">
                                         @foreach (var area in lAreaFuncional)
                                         {
@@ -199,13 +225,17 @@
                         <!-- Producto -->
                         <tr>
                             <td>
+                                @if (_productoNombre == null)
+                                {
+                                    <div class="text-danger" style="font-size:10pt;">Debe seleccionar un producto válido de la lista.</div>
+                                }
                                 <div class="input-group mb-3 input-group-sm">
                                     <span class="input-group-text" style="width:120px;">Productos</span>
                                     <input class="form-select"
-                                    list="productoList"
-                                    @bind="_productoNombre"
-                                    @oninput="OnproductoInput"
-                                    placeholder="Seleccione un producto" required />
+                                           list="productoList"
+                                           @bind="_productoNombre"
+                                           @oninput="OnproductoInput"
+                                           placeholder="Seleccione un producto" required />
                                     <datalist id="productoList">
                                         @foreach (var producto in lProductos)
                                         {
@@ -229,13 +259,17 @@
                         <!-- Patente (con datalist) -->
                         <tr>
                             <td>
+                                @if (_patenteNombre == null)
+                                {
+                                    <div class="text-danger" style="font-size:10pt;">Debe seleccionar una patente válida de la lista.</div>
+                                }
                                 <div class="input-group mb-3 input-group-sm">
                                     <span class="input-group-text" style="width:120px;">Patente</span>
                                     <input class="form-control"
-                                    list="patenteList"
-                                    @bind="_patenteNombre"
-                                    @oninput="OnPatenteInput"
-                                    placeholder="Seleccione una Patente" required />
+                                           list="patenteList"
+                                           @bind="_patenteNombre"
+                                           @oninput="OnPatenteInput"
+                                           placeholder="Seleccione una Patente" required />
                                     <datalist id="patenteList">
                                         @foreach (var patente in lPatentes)
                                         {
@@ -253,12 +287,9 @@
                                 <div class="input-group mb-3 input-group-sm position-relative">
                                     <span class="input-group-text" style="width:120px;">Horas</span>
                                     <InputNumber class="form-floating"
-                                    @bind-Value="_newTarea.horas"
-                                    @onblur="ValidarHoras"
-                                    required />
-
-
-
+                                                 @bind-Value="_newTarea.horas"
+                                                 @onblur="ValidarHoras"
+                                                 required />
                                 </div>
                             </td>
                         </tr>
@@ -303,16 +334,26 @@
                 <!-- Título -->
                 <h3 style="font-size: 18pt; color: #333; font-weight: 500;">Calendario</h3>
             </div>
-            <div style="overflow-x:auto; max-height: 68vh; height: 80%; width: 100%; padding: 10px;">
+            <div style="overflow-y:auto; max-height: 56vh; width: 100%; padding: 10px; background-color: white;">
                 <table class="table table-bordered table-hover" style="border-radius: 10px; border-collapse: separate; border-spacing: 0 5px;">
                     <thead class="bg-light text-dark" style="position: sticky; top: -10px; z-index: 1;">
                         <tr>
                             <th class="text-center" style="width: 60px; font-size: 12pt; font-weight: 300; color: #555;">
                                 <i style="font-size: 10pt;">Hora</i>
                             </th>
+
                             @for (int _index = 0; _index < 5; _index++)
                             {
-                                DateTime _dia = ltareas.Min(o => o.PrimerDiaSemana).AddDays(_index);
+                                if (ltareas.Count() > 0)
+                                {
+                                    _dia = ltareas.Min(o => o.PrimerDiaSemana).AddDays(_index);
+                                }
+                                else
+                                {
+                                    _dia = _dia.AddDays(_index);
+                                }
+
+
                                 <th class="text-center">
                                     <div class="d-flex flex-column align-items-center">
                                         <p class="m-0" style="font-size: 12pt; font-weight: 400; color: #6c757d; font-family: 'Roboto', sans-serif;">
@@ -337,7 +378,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (int _hora = 7; _hora < 20; _hora++)
+                        @for (int _hora = 0; _hora < 24; _hora++)
                         {
                             <tr>
                                 <td class="text-center align-middle" style="font-size: 10pt; color: #4a4a4a;">
@@ -345,7 +386,16 @@
                                 </td>
                                 @for (int _index = 0; _index < 5; _index++)
                                 {
-                                    DateTime _dia = ltareas.Min(o => o.PrimerDiaSemana).AddDays(_index);
+                                    if (ltareas.Count() > 0)
+                                    {
+                                        _dia = ltareas.Min(o => o.PrimerDiaSemana).AddDays(_index);
+                                    }
+                                    else
+                                    {
+                                        _dia = _dia.AddDays(_index);
+                                    }
+
+
                                     <td class="text-center" style="position: relative; vertical-align: middle; font-size: 9pt; color: #333; padding: 10px;">
                                         @{
                                             var _tHoras = CalcularHoras(_dia.Date, _hora);
@@ -368,13 +418,34 @@
                             </tr>
                         }
                     </tbody>
+                    <!--Totales-->
+                    <tfoot style="background-color:white; height:0px;">
+                        <tr style="position: sticky; bottom: 0; z-index: 99;">
+                            <td class="text-center fw-bold" style="background-color: #f8f9fa; font-size: 10pt; color: #333;">
+                                Total
+                            </td>
+                            @for (int _index = 0; _index < 5; _index++)
+                            {
+                                DateTime _diaTotal = ltareas.Count() > 0
+                                ? ltareas.Min(o => o.PrimerDiaSemana).AddDays(_index)
+                                : DateTime.Today.AddDays(_index);
+
+                                double totalHorasDia = CalcularTotalHorasPorDia(_diaTotal);
+
+                                <td class="text-center fw-bold" style="background-color: #f8f9fa; font-size: 14pt; color: darkblue;">
+                                    @totalHorasDia.ToString("0.#") hs
+                                </td>
+                            }
+                        </tr>
+                    </tfoot>                   
                 </table>
             </div>
+            
         </div>
     }
     else
     {
-        <div style="max-height: 70vh; overflow-y: auto;">
+        <div>
             <!-- Título con Icono de Bootstrap -->
             <div style="display: flex; align-items: center; margin-bottom: 15px;">
                 <!-- Icono de Bootstrap -->
@@ -383,47 +454,49 @@
                 <h3 style="font-size: 18pt; color: #333; font-weight: 500;">Tarjetas</h3>
             </div>
 
-            @foreach (var t in ltareas)
-            {
-                <div class="card mb-3 shadow-lg border-0 rounded-4" style="font-size: 0.9rem; background: transparent;">
-                    <div class="card-body px-4 py-3">
-                        <!-- Encabezado con Cliente y Fecha -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <strong class="text-primary" style="font-size: 1.1rem; font-weight: 600;">@t.Cliente.nombre</strong>
-                            <span class="text-muted" style="font-size: 0.8rem; font-weight: 400;">
-                                @t.fecha.ToString("dddd dd/MM/yyyy") · Semana @t.NumeroSemana
-                            </span>
-                        </div>
+            <!-- Contenedor con scroll solo para las tarjetas -->
+            <div style="max-height: 70vh; overflow-y: auto;">
+                @foreach (var t in ltareas)
+                {
+                    <div class="card mb-3 shadow-lg border-0 rounded-4" style="font-size: 0.9rem; background: transparent;">
+                        <div class="card-body px-4 py-3">
+                            <!-- Encabezado con Cliente y Fecha -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <strong class="text-primary" style="font-size: 1.1rem; font-weight: 600;">@t.Cliente.nombre</strong>
+                                <span class="text-muted" style="font-size: 0.8rem; font-weight: 400;">
+                                    @t.fecha.ToString("dddd dd/MM/yyyy") · Semana @t.NumeroSemana
+                                </span>
+                            </div>
 
-                        <!-- Información de la Tarea -->
-                        <div class="mb-3">
-                            <div><strong>Usuario:</strong> @t.Usuario</div>
-                            <div><strong>Área:</strong> @t.AreaFuncional.nombre</div>
-                            <div><strong>Tarea:</strong> @t.tarea</div>
-                            @if (!string.IsNullOrEmpty(t?.Patente?.nombre))
-                            {
-                                <div><strong>Patente:</strong> @t.Patente.nombre</div>
-                            }
-                            <div><strong>Producto:</strong> @t.Producto.nombre</div>
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-clock" style="font-size: 1.2rem; color: #007bff;"></i>
-                                <span class="ms-2"><strong>Horas:</strong> @($"{t.horas}:{t.minutos.ToString().PadLeft(2, '0')}")</span>
+                            <!-- Información de la Tarea -->
+                            <div class="mb-3">
+                                <div><strong>Usuario:</strong> @t.Usuario</div>
+                                <div><strong>Área:</strong> @t.AreaFuncional.nombre</div>
+                                <div><strong>Tarea:</strong> @t.tarea</div>
+                                @if (!string.IsNullOrEmpty(t?.Patente?.nombre))
+                                {
+                                    <div><strong>Patente:</strong> @t.Patente.nombre</div>
+                                }
+                                <div><strong>Producto:</strong> @t.Producto.nombre</div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-clock" style="font-size: 1.2rem; color: #007bff;"></i>
+                                    <span class="ms-2"><strong>Horas:</strong> @($"{t.horas}:{t.minutos.ToString().PadLeft(2, '0')}")</span>
+                                </div>
+                            </div>
+
+                            <!-- Botones de Editar y Eliminar -->
+                            <div class="d-flex justify-content-end gap-3">
+                                <button class="btn btn-sm btn-outline-primary" @onclick="() => Edit(t.id)" data-bs-toggle="modal" data-bs-target="#myModal">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" @onclick="() => Delete(t.id)" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                    <i class="bi bi-trash3"></i> Eliminar
+                                </button>
                             </div>
                         </div>
-
-                        <!-- Botones de Editar y Eliminar -->
-                        <div class="d-flex justify-content-end gap-3">
-                            <button class="btn btn-sm btn-outline-primary" @onclick="() => Edit(t.id)" data-bs-toggle="modal" data-bs-target="#myModal">
-                                <i class="bi bi-pencil"></i> Editar
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" @onclick="() => Delete(t.id)" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                <i class="bi bi-trash3"></i> Eliminar
-                            </button>
-                        </div>
                     </div>
-                </div>
-            }
-
+                }
+            </div>
         </div>
 
     }
@@ -431,6 +504,7 @@
 
 @code {
     private bool isFormValid = true;
+    private int? sSemana = null;
     private string _patenteNombre;
     private string _productoNombre;
     private string _areaNombre;
@@ -451,6 +525,7 @@
     private int deleteId;
     private string errorMessage;
     private bool showErrorMessage = false;
+    private DateTime _dia = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
@@ -458,6 +533,10 @@
         lAreaFuncional = AppState.lAreaFuncional;
         lPatentes = AppState.lPatentes;
         lProductos = AppState.lProductos;
+
+        if (sSemana == null)
+            sSemana = AppState.NueroSemana;
+
         NuevaTareas();
         cargarTareas();
     }
@@ -468,15 +547,23 @@
             .Include(p => p.Patente)
             .Include(pr => pr.Producto)
             .Include(a => a.AreaFuncional)
-            .Where(w => w.Usuario.Equals(AppState.UserName)
-                && w.Cliente.nombre.Contains(sCliente)
+            .Where(w => w.Cliente.nombre.Contains(sCliente)
                 && w.AreaFuncional.nombre.Contains(sTarea)
                 && w.Producto.nombre.Contains(sProducto)
                 && w.Patente.nombre.Contains(sPatente)
             ).OrderByDescending(o => o.fecha)
             .ToList();
 
-        ltareas = ltareas.Where(w => w.NumeroSemana == AppState.NueroSemana).ToList();
+        if (AppState.UserName != "datawarehouse")
+        {
+            ltareas = ltareas.Where(w => w.Usuario == AppState.UserName).ToList();
+        }
+
+        if (sSemana == null)
+            ltareas = ltareas.Where(w => w.NumeroSemana == AppState.NueroSemana).ToList();
+        else
+            ltareas = ltareas.Where(w => w.NumeroSemana == sSemana).ToList();
+
         ClearError();
         CalcularHoras();
         NuevaTareas();
@@ -485,6 +572,7 @@
     private async Task NuevaTareas()
     {
         _newTarea = new Tareas();
+        _newTarea.fecha = DateTime.SpecifyKind(DateTime.Now.AddHours(-3), DateTimeKind.Unspecified);
         _newTarea.Usuario = AppState.UserName;
         if (AppState.DefaultClienteId > 0)
             _newTarea.clienteId = AppState.DefaultClienteId;
@@ -508,8 +596,17 @@
     {
         var _MinutosHoras = ltareas.Sum(o => o.horas) * 60;
         var _MinutosTotales = ltareas.Sum(o => o.minutos) + _MinutosHoras;
+
         TimeSpan ts = TimeSpan.FromMinutes(_MinutosTotales);
-        _TotalHoras = Math.Round(ts.TotalHours, 2);
+
+        // Convertir a HH.mm (ej: 3.15 = 3 horas y 15 minutos)
+        int horas = ts.Hours + ts.Days * 24;
+        int minutos = ts.Minutes;
+
+        _TotalHoras = double.Parse($"{horas},{minutos:D2}");
+
+
+        //_TotalHoras = Math.Round(ts.TotalHours, 2);
     }
 
     private double CalcularHoras(DateTime fecha, int hora)
@@ -518,7 +615,22 @@
         var _MinutosHoras = tareas.Sum(o => o.horas) * 60;
         var _MinutosTotales = tareas.Sum(o => o.minutos) + _MinutosHoras;
         TimeSpan ts = TimeSpan.FromMinutes(_MinutosTotales);
-        return Math.Round(ts.TotalHours, 2);
+        // Convertir a HH.mm (ej: 3.15 = 3 horas y 15 minutos)
+        int horas = ts.Hours + ts.Days * 24;
+        int minutos = ts.Minutes;
+
+        return double.Parse($"{horas},{minutos:D2}"); // Math.Round(ts.TotalHours, 2);
+    }
+
+    private double CalcularTotalHorasPorDia(DateTime dia)
+    {
+        var _MinutosHoras = ltareas.Where(t => t.fecha.Date == dia.Date).Sum(o => o.horas) * 60;
+        var _MinutosTotales = ltareas.Where(t => t.fecha.Date == dia.Date).Sum(o => o.minutos) + _MinutosHoras;
+        TimeSpan ts = TimeSpan.FromMinutes(_MinutosTotales);
+        int horas = ts.Hours + ts.Days * 24;
+        int minutos = ts.Minutes;
+
+        return double.Parse($"{horas},{minutos:D2}");
     }
 
     private async Task Save()
@@ -526,24 +638,47 @@
         isFormValid = true;
 
         try
-        {           
+        {
+
+            //_newTarea.fecha = DateTime.SpecifyKind(_newTarea.fecha, DateTimeKind.Unspecified); ;
+
+
+            //validarNull
+            if (_newTarea.patenteId == null || _newTarea.clienteId == null || _newTarea.areaFuncionalId == null || _newTarea.productoId == null)
+            {
+                return;
+            }
+
             _newTarea.patenteId = (_newTarea.patenteId.Equals(0)) ? null : _newTarea.patenteId;
             _newTarea.clienteId = (_newTarea.clienteId.Equals(0)) ? 0 : _newTarea.clienteId;
             _newTarea.areaFuncionalId = (_newTarea.areaFuncionalId.Equals(0)) ? null : _newTarea.areaFuncionalId;
             _newTarea.productoId = (_newTarea.productoId.Equals(0)) ? null : _newTarea.productoId;
 
+
+            if (_newTarea.fecha.Hour == 0)
+            {
+                DateTime _f = DateTime.Now.AddHours(-3);
+                _newTarea.fecha = _newTarea.fecha.AddHours(_f.Hour);
+            }
+
+
             if (_newTarea.id > 0)
             {
                 _context.Tareas.Update(_newTarea);
+
                 _context.SaveChanges();
             }
             else
             {
+
                 _context.Tareas.Add(_newTarea);
                 _context.SaveChanges();
+
+
             }
             await JS.InvokeVoidAsync("cerrarModalPorId", "myModal");
         }
+
         catch (Exception e)
         {
             ShowError($"Ocurrió un error al guardar la tarea: {e.Message}");
@@ -556,6 +691,8 @@
     {
         deleteId = id;
     }
+
+
 
     private async Task ConfirmDelete()
     {
@@ -600,24 +737,21 @@
         }
         else
         {
-            _newTarea.patenteId = 0; // O null si es nullable
-            _patenteNombre = "";
+            _newTarea.patenteId = null; // O null si es nullable
+            _patenteNombre = null;
         }
     }
 
-    private async Task OnClienteInput(ChangeEventArgs e)
+    private void OnClienteInput(ChangeEventArgs e)
     {
+        _newTarea.clienteId = null; // O null si es nullable
+        _clienteid = null;
         var _search = e.Value?.ToString();
         var seleccionada = lClientes.FirstOrDefault(p => p.nombre == _search);
         if (seleccionada != null)
         {
             _newTarea.clienteId = seleccionada.id;
             _clienteid = seleccionada.nombre;
-        }
-        else
-        {
-            _newTarea.clienteId = 0; // O null si es nullable
-            _clienteid = "";
         }
     }
 
@@ -632,8 +766,8 @@
         }
         else
         {
-            _newTarea.productoId = 0; // O null si es nullable
-            _productoNombre = "";
+            _newTarea.productoId = null; // O null si es nullable
+            _productoNombre = null;
         }
     }
 
@@ -648,8 +782,8 @@
         }
         else
         {
-            _newTarea.areaFuncionalId = 0; // O null si es nullable
-            _areaNombre = "";
+            _newTarea.areaFuncionalId = null; // O null si es nullable
+            _areaNombre = null;
         }
     }
 
@@ -669,7 +803,7 @@
     }
 
     private async void ShowError(string message)
-    {        
+    {
         errorMessage = message;
         showErrorMessage = true;
         await JS.InvokeVoidAsync("cerrarModalPorId", "myModal");
@@ -682,5 +816,19 @@
         errorMessage = string.Empty;
         showErrorMessage = false;
     }
+
+    private void setPrimerDiaSemana()
+    {
+        DateTime hoy = DateTime.Now;
+
+        // Hacemos que lunes sea siempre el primer día de la semana
+        int diferencia = (7 + ((int)hoy.DayOfWeek - (int)DayOfWeek.Monday)) % 7;
+
+        DateTime primerDiaSemana = hoy.AddDays(-diferencia);
+
+        // Ahora _dia es el lunes de esta semana
+        _dia = primerDiaSemana;
+    }
 }
+
 

@@ -10,7 +10,7 @@ namespace CargaHoras.Model
     {
         public string Usuario { get; set; }= "";
         public int id { get; set; }
-        public DateTime fecha { get; set; } = DateTime.Now;
+        public DateTime fecha { get; set; }
 
        
         public int? clienteId { get; set; }
@@ -25,11 +25,13 @@ namespace CargaHoras.Model
         public int? productoId { get; set; }
 
         [Required(ErrorMessage = "La Hora es obligatorio")]
-        [Range(1, 24, ErrorMessage = "Las horas deben estar entre 1 y 24")]
+        [Range(0, 24, ErrorMessage = "Las horas deben estar entre 0 y 24")]
         public int horas { get; set; }
 
+        [Required(ErrorMessage = "Minutos es obligatorio")]
+        [Range(0, 59, ErrorMessage = "Los minutos deben estar entre 0 y 59 ")]
         public int minutos { get; set; } = 0;
-               
+
 
         public DateTime horaRegistrada 
         {
@@ -59,9 +61,13 @@ namespace CargaHoras.Model
             {
                 DateTime hoy = this.fecha;
 
-                // Asumiendo que la semana comienza el lunes (DayOfWeek.Monday)
-                int diferencia = (7 + (hoy.DayOfWeek - DayOfWeek.Monday)) % 7;
-                return hoy.AddDays(-diferencia);
+                // Hacemos que lunes sea siempre el primer día de la semana
+                int diferencia = (7 + ((int)hoy.DayOfWeek - (int)DayOfWeek.Monday)) % 7;
+
+                DateTime primerDiaSemana = hoy.AddDays(-diferencia);
+
+                // Ahora _dia es el lunes de esta semana
+                return primerDiaSemana;
             }
         }
 
