@@ -183,10 +183,10 @@
                                 <div class="input-group mb-3 input-group-sm">
                                     <span class="input-group-text" style="width:120px;">Cliente</span>
                                     <input class="form-select"
-                                           list="clienteList"
-                                           @bind="_clienteid"
-                                           @oninput="OnClienteInput"
-                                           placeholder="Seleccione un cliente" required />
+                                    list="clienteList"
+                                    @bind="_clienteid"
+                                    @oninput="OnClienteInput"
+                                    placeholder="Seleccione un cliente" required />
                                     <datalist id="clienteList">
                                         @foreach (var cliente in lClientes)
                                         {
@@ -208,10 +208,10 @@
                                 <div class="input-group mb-3 input-group-sm">
                                     <span class="input-group-text" style="width:120px;">Area Funcional</span>
                                     <input class="form-control"
-                                           list="areaList"
-                                           @bind="_areaNombre"
-                                           @oninput="OnAreaInput"
-                                           placeholder="Seleccione un area" required />
+                                    list="areaList"
+                                    @bind="_areaNombre"
+                                    @oninput="OnAreaInput"
+                                    placeholder="Seleccione un area" required />
                                     <datalist id="areaList">
                                         @foreach (var area in lAreaFuncional)
                                         {
@@ -232,10 +232,10 @@
                                 <div class="input-group mb-3 input-group-sm">
                                     <span class="input-group-text" style="width:120px;">Productos</span>
                                     <input class="form-select"
-                                           list="productoList"
-                                           @bind="_productoNombre"
-                                           @oninput="OnproductoInput"
-                                           placeholder="Seleccione un producto" required />
+                                    list="productoList"
+                                    @bind="_productoNombre"
+                                    @oninput="OnproductoInput"
+                                    placeholder="Seleccione un producto" required />
                                     <datalist id="productoList">
                                         @foreach (var producto in lProductos)
                                         {
@@ -266,14 +266,14 @@
                                 <div class="input-group mb-3 input-group-sm">
                                     <span class="input-group-text" style="width:120px;">Patente</span>
                                     <input class="form-control"
-                                           list="patenteList"
-                                           @bind="_patenteNombre"
-                                           @oninput="OnPatenteInput"
-                                           placeholder="Seleccione una Patente" required />
+                                    list="patenteList"
+                                    @bind="_patenteNombre"
+                                    @oninput="OnPatenteInput"
+                                    placeholder="Seleccione una Patente" required />
                                     <datalist id="patenteList">
                                         @foreach (var patente in lPatentes)
                                         {
-                                            <option value="@patente.nombre" />
+                                            <option value="@patente.descripcion" />
                                         }
                                     </datalist>
                                 </div>
@@ -287,9 +287,9 @@
                                 <div class="input-group mb-3 input-group-sm position-relative">
                                     <span class="input-group-text" style="width:120px;">Horas</span>
                                     <InputNumber class="form-floating"
-                                                 @bind-Value="_newTarea.horas"
-                                                 @onblur="ValidarHoras"
-                                                 required />
+                                    @bind-Value="_newTarea.horas"
+                                    @onblur="ValidarHoras"
+                                    required />
                                 </div>
                             </td>
                         </tr>
@@ -440,7 +440,7 @@
                     </tfoot>                   
                 </table>
             </div>
-            
+
         </div>
     }
     else
@@ -475,7 +475,7 @@
                                 <div><strong>Tarea:</strong> @t.tarea</div>
                                 @if (!string.IsNullOrEmpty(t?.Patente?.nombre))
                                 {
-                                    <div><strong>Patente:</strong> @t.Patente.nombre</div>
+                                    <div><strong>Patente:</strong> @t.Patente.descripcion</div>
                                 }
                                 <div><strong>Producto:</strong> @t.Producto.nombre</div>
                                 <div class="d-flex align-items-center">
@@ -712,9 +712,10 @@
     private async Task Edit(int id)
     {
         _newTarea = _context.Tareas.Find(id);
-        _patenteNombre = _newTarea.Patente.nombre;
+        _patenteNombre = _newTarea.Patente.descripcion;
         _productoNombre = _newTarea.Producto.nombre;
         _clienteid = _newTarea.Cliente.nombre;
+        _areaNombre = _newTarea.AreaFuncional.nombre;
     }
 
     private async Task CleaFilters()
@@ -729,11 +730,11 @@
     private async Task OnPatenteInput(ChangeEventArgs e)
     {
         var _search = e.Value?.ToString();
-        var seleccionada = lPatentes.FirstOrDefault(p => p.nombre == _search);
+        var seleccionada = lPatentes.FirstOrDefault(p => p.descripcion == _search);
         if (seleccionada != null)
         {
             _newTarea.patenteId = seleccionada.id;
-            _patenteNombre = seleccionada.nombre;
+            _patenteNombre = seleccionada.descripcion;
         }
         else
         {
